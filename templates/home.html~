@@ -8,7 +8,6 @@
 	<p class="sub">Python supports multiple programming paradigms, including object-oriented, imperative and functional programming styles. It features a dynamic type system and automatic memory management and has a large and comprehensive standard library.</p>
 	<p class="sub">Like other dynamic languages, Python is often used as a scripting language, but is also used in a wide range of non-scripting contexts. Using third-party tools, Python code can be packaged into standalone executable programs. Python interpreters are available for many operating systems.</p>
 	<p class="sub">CPython, the reference implementation of Python, is free and open source software and has a community-based development model, as do nearly all of its alternative implementations. CPython is managed by the non-profit Python Software Foundation.</p>
-	<br />
 
 	<a class="link" href="/welcome">Click here</a> to goto Welcome Page
 	</div>

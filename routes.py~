@@ -12,7 +12,7 @@ app.secret_key='Working'
 def connect_db():
 	return sqlite3.connect(app.config['DATABASE'])
  
-@app.route('/welcome')
+@app.route('/home')
 def index():
 	return render_template('home.html')
  
