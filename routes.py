@@ -2,109 +2,118 @@ from flask import *
 from functools import wraps
 import sqlite3
 
-DATABASE='task.db'
+DATABASE = 'Task.db'
 
-app=Flask(__name__)
+app = Flask(__name__)
 app.config.from_object(__name__)
- 
-app.secret_key='Working'
- 
+
+app.secret_key = 'I dont know'
+
 def connect_db():
 	return sqlite3.connect(app.config['DATABASE'])
- 
-@app.route('/welcome')
-def index():
-	return render_template('home.html')
- 
-def login_required(func):
-	@wraps(func)
-	def wrap(*args,**kwargs):
+
+@app.before_request
+def before_request():
+    g.db = connect_db()
+
+
+def login_required(test):
+	@wraps(test)
+	def wrap(*args, **kwargs):
 		if 'logged_in' in session:
-			return func(*args, **kwargs)
+			return test(*args, **kwargs)
 		else:
-			flash('You need to login first')
+			flash('You need to login first.')
 			return redirect(url_for('login'))
-	return wrap
+	return wrap	
+
+@app.route('/welcome')
+@login_required
+def welcome():
+	return render_template('home.html')
 
 @app.route('/logout')
 def logout():
-	session.pop('logged_in',None)
-	flash("You are now Logged out.")
-	return redirect(url_for('login'))
+	session.pop('logged_in', None)
+	flash('You were logged out')
+	return redirect (url_for('login'))
 
-@app.route('/Main')
+@app.route('/tasks')
 @login_required
-def hello():
-	g.db=connect_db()
-	db=g.db.execute('select name,due_date,priority,task_id from tasktable where status=1')
-	open_tasks=[dict(name=row[0],due_date=row[1],priority=row[2],status=row[3]) for row in cur.fetchall]
-	db=g.db.execute('select name,due_date,priority,task_id from tasktable where status=0')
-	closed_tasks=[dict(name=row[0],due_date=row[1],priority=row[2],status=row[3]) for row in cur.fetchall]
-	g.db.close()
-	return render_template('tasks.html',open_tasks=open_tasks,closed_tasks=closed_tasks)
+def tasks():
+    g.db  = connect_db()
+    cur = g.db.execute('select name, due_date, priority, task_id from tasktable where status=1')
+    open_tasks = [dict(name=row[0], due_date=row[1], priority=row[2], task_id=row[3]) for row in cur.fetchall()]
+    cur = g.db.execute('select name, due_date, priority, task_id from tasktable where status=0')
+    closed_tasks = [dict(name=row[0], due_date=row[1], priority=row[2], task_id=row[3]) for row in cur.fetchall()]
+    g.db.close()
+    return render_template('tasks.html', open_tasks=open_tasks, closed_tasks=closed_tasks)
 
-@app.route('/',methods=['GET','POST'])
-def login():
-	error=None
-	if request.method=='POST':
-		if request.form['username']!='admin' or request.form['password']!='admin':
-			error="The Username or Password you entered is Invalid!"
-		else:
-			session['logged_in']=True
-			return redirect(url_for('Main'))
-	return render_template('login.html',error=error)
-
+@app.route('/add', methods=['POST'])
 @login_required
 def new_task():
-	name=request.form['name']
-	date=request.form['due_date']
-	priority=request.form['priority']
-	if not name and not date and not priority:
-		flash("You forgot the task name,date and priority! Try again!")
-		return redirect(url_for('tasks'))
-	elif not name and not date:
-		flash("You forgot the task name and date! Try again!")
-		return redirect(url_for('tasks'))
-	elif not name and not priority:
-		flash("You forgot the task name and priority! Try again!")
-		return redirect(url_for('tasks'))
-	elif not date and not priority:
-		flash("You forgot the date and priority! Try again!")
-		return redirect(url_for('tasks'))
-	elif not name:
-		flash("You forgot the task name! Try again!")
-		return redirect(url_for('tasks'))
-	elif not priority:
-		flash("You forgot the priority! Try again!")
-		return redirect(url_for('tasks'))
-	elif not date:
-		flash("You forgot the date! Try again!")
-		return redirect(url_for('tasks'))
-	else:
-		g.db.execute('insert into tasktable(name,due_date,priority,status) values(?,?,?,1)',request.form['name'],request.form['due_date'],request.form['priority'])
-		g.db.commit()
-		flash("Task Updated!")
-		return redirect(url_for('tasks'))
-		
-@app.route('/delete/<int:task_id>')
+    name = request.form['name']
+    date = request.form['due_date']
+    priority = request.form['priority']
+    if not name and not date and not priority:
+        flash("You forgot the task name, date, and priority! Try again.")
+        return redirect(url_for('tasks'))
+    elif not name and not date:
+        flash("You forgot the task name and date! Try again.")
+        return redirect(url_for('tasks'))
+    elif not date and not priority:
+        flash("You forgot the task date and priority! Try again.")
+        return redirect(url_for('tasks'))
+    elif not name and not priority:
+        flash("You forgot the task name and priority! Try again.")
+        return redirect(url_for('tasks'))   
+    elif not name:
+        flash("You forgot the task name! Try again.")
+        return redirect(url_for('tasks'))
+    elif not date:
+        flash("You forgot the task date! Try again.")
+        return redirect(url_for('tasks'))
+    elif not priority:
+        flash("You forgot the task priority! Try again.")
+        return redirect(url_for('tasks'))    
+    else:
+        g.db.execute('insert into tasktable (name, due_date, priority, status) values (?, ?, ?, 1)',
+             [request.form['name'], request.form['due_date'], request.form['priority']])                 
+        g.db.commit()
+        flash('New entry was successfully posted')
+        return redirect(url_for('tasks'))
+
+@app.route('/delete/<int:task_id>',)
 @login_required
 def delete_entry(task_id):
-	g.db=connect_db()
-	cur=g.db.execute('delete from tasktable where task_id='+str(task_id))
-	g.db.commit()
-	g.db.close()
-	flash('The Task is deleted!')
-	return redirect(url_for('tasks'))	
+    g.db  = connect_db()
+    cur = g.db.execute('delete from tasktable where task_id='+str(task_id))
+    g.db.commit()
+    g.db.close()
+    flash('The task was deleted')
+    return redirect(url_for('tasks'))
 
-@app.route('/complete/<int:task_id>')
+@app.route('/complete/<int:task_id>',)
 @login_required
 def complete(task_id):
-	g.db=connect_db()
-	cur=g.db.execute('update tasktable set status=0 where task_id='+str(task_id))
-	g.db.commit()
-	g.db.close()
-	flash('The Task was marked as Complete!')
-	return redirect(url_for('tasks'))
+    g.db  = connect_db()
+    cur = g.db.execute('update tasktable set status = 0 where task_id='+str(task_id))
+    g.db.commit()
+    g.db.close()
+    flash('The task was marked as complete.')
+    return redirect(url_for('tasks'))
 
-if __name__=='__main__':
+
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        if request.form['username'] != 'admin' or request.form['password'] != 'admin':
+            error = 'Invalid Credentials. Please try again.'
+        else:
+			session['logged_in'] = True
+			return redirect(url_for('welcome'))
+    return render_template('login.html', error=error)
+		
+if __name__ == '__main__':
 	app.run(debug=True)

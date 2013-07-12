@@ -10,16 +10,17 @@
  		<div class="navbar-inner">
  		 	<a class="brand" href="/">Working with python-Flask</a>
  		 	<ul class="nav">
- 		 		<li  class="active"><a href="/">Home</a></li>
- 		 		<li><a href="/welcome">Welcome</a></li>
+ 		 		<li  class="active"><a href="/welcome">Home</a></li>
+ 		 		<li><a href="/tasks">Task App.</a></li>
  		 		<li><a href="/Login">Login</a></li>
  		 	</ul>
  		 </div>
  	</div>
  </header>
  	<div class="container">
- 		{% for message in get_flashed_messages() %}
- 		<div>{{ message }}</div>
+ 	{% for message in get_flashed_messages() %}
+      <div class=flash>{{ message }}</div>
+      {% endfor %}
  		{% block content %}
  		{% endblock %}
  	</div>
