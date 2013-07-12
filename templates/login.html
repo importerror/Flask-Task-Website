@@ -14,5 +14,8 @@
 	</dl>
 	<p><input type=submit value=Login>
 </form>
+{% for messages in get_flashed_messages() %}
+<div class="flash" style="color:red; font-family:cursive;">{{ messages }}</div>
+{% endfor %}
 
 {% endblock %}
