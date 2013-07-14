@@ -4452,6 +4452,8 @@ input[type="submit"].btn.btn-mini {
 
 .navbar-inner:before,
 .navbar-inner:after {
+  position:fixed;
+  z-index:1;
   display: table;
   line-height: 0;
   content: "";

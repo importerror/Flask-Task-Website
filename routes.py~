@@ -7,7 +7,7 @@ DATABASE = 'Task.db'
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-app.secret_key = 'I dont know'
+app.secret_key = '223wqd8wqhdiwnda8dhqwe2q98ehqwndq'
 
 def connect_db():
 	return sqlite3.connect(app.config['DATABASE'])
@@ -25,14 +25,14 @@ def login_required(test):
 		else:
 			flash('You need to login first.')
 			return redirect(url_for('login'))
-	return wrap	
+	return wrap
 
 @app.route('/welcome')
 @login_required
 def welcome():
 	return render_template('home.html')
 
-@app.route('/logout')
+@app.route('/Logout')
 def logout():
 	session.pop('logged_in', None)
 	flash('You were logged out')
@@ -66,7 +66,7 @@ def new_task():
         return redirect(url_for('tasks'))
     elif not name and not priority:
         flash("You forgot the task name and priority! Try again.")
-        return redirect(url_for('tasks'))   
+        return redirect(url_for('tasks'))
     elif not name:
         flash("You forgot the task name! Try again.")
         return redirect(url_for('tasks'))
@@ -75,10 +75,10 @@ def new_task():
         return redirect(url_for('tasks'))
     elif not priority:
         flash("You forgot the task priority! Try again.")
-        return redirect(url_for('tasks'))    
+        return redirect(url_for('tasks'))
     else:
         g.db.execute('insert into tasktable (name, due_date, priority, status) values (?, ?, ?, 1)',
-             [request.form['name'], request.form['due_date'], request.form['priority']])                 
+             [request.form['name'], request.form['due_date'], request.form['priority']])
         g.db.commit()
         flash('New entry was successfully posted')
         return redirect(url_for('tasks'))
@@ -116,6 +116,6 @@ def login():
 			session['logged_in'] = True
 			return redirect(url_for('welcome'))
     return render_template('login.html', error=error)
-		
+
 if __name__ == '__main__':
 	app.run(debug=True)
