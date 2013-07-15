@@ -103,7 +103,15 @@ def complete(task_id):
     flash('The task was marked as complete.')
     return redirect(url_for('tasks'))
 
-
+@app.route('/incomplete/<int:task_id>',)
+@login_required
+def incomplete(task_id):
+    g.db  = connect_db()
+    cur = g.db.execute('update tasktable set status = 1 where task_id='+str(task_id))
+    g.db.commit()
+    g.db.close()
+    flash('The task was marked as incomplete.')
+    return redirect(url_for('tasks'))
 
 
 @app.route('/', methods=['GET', 'POST'])

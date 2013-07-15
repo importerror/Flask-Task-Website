@@ -4,6 +4,8 @@
  	<title>Flask Task</title>
  	<link type="text/css" rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.css') }}"/>
  	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+ 	<script src="{{ url_for('static',filename='js/effects.js') }}"></script>
+ 	
  </head>
  <body>
  <header>
@@ -11,7 +13,7 @@
  		<div class="navbar-inner">
  		 	<a class="brand" href="/">Working with python-Flask</a>
  		 	<ul class="nav">
- 		 		<li  class="active"><a href="/welcome">Home</a></li>
+ 		 		<li class="active"><a href="/welcome">Home</a></li>
  		 		<li><a href="/tasks">Task App.</a></li>
  		 		<li><a href="/Logout">Logout</a></li>
  		 	</ul>
