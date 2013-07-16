@@ -1,4 +1,4 @@
  function popup()
  {
-  alert("Checking!");
+  
  }

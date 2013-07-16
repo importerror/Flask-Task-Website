@@ -14,7 +14,7 @@
  		 	<a class="brand" href="/">Working with python-Flask</a>
  		 	<ul class="nav">
  		 		<li class="active"><a href="/welcome">Home</a></li>
- 		 		<li onmouseover="popup()"><a href="/tasks">Task App.</a></li>
+ 		 		<li><a href="/tasks">Task App.</a></li>
  		 		<li><a href="/Logout">Logout</a></li>
  		 	</ul>
  		 </div>

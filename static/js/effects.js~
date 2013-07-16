@@ -1,0 +1,4 @@
+ function popup()
+ {
+  setInterval(function(){location.assign("http://yahoo.com")},3000)
+ }

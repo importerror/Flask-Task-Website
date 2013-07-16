@@ -4428,8 +4428,11 @@ input[type="submit"].btn.btn-mini {
 }
 
 .navbar-inner {
+  z-index:10;
+  position:fixed;
+  top:2px;
   min-height: 40px;
-  padding-right: 20px;
+  padding-right: 780px;
   padding-left: 20px;
   background-color: #fafafa;
   background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
