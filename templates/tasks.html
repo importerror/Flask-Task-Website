@@ -2,7 +2,6 @@
 {% block content %}
     <div class="page">
     <h1>Task Management Application</h1>
-    <a href="/logout">Logout</a>
     <div class="add-task">
         <h3>Add a new task:</h3>
         <table>
@@ -10,10 +9,10 @@
         <form action="{{ url_for('new_task') }}" method=post class=new-task>
             <td>
             <label>Task Name:</label>
-            <input name="name" type="text">
+            <input name="name" type="text" default="Hello">
             </td>
             <td>
-            <label>Due Date (mm/dd/yyyy):</label>
+            <label>Due Date (dd/mm/yyyy):</label>
             <input name="due_date" type="text" width="120px">
             </td>
         </tr>
