@@ -55,9 +55,45 @@ def new_task():
     name = request.form['name']
     date = request.form['due_date']
     priority = request.form['priority']
+    
+    if not date:
+       flash("You forgot the task date! Try again.")
+       return redirect(url_for('tasks'))
+       
+    date_check=0
+    first_slash=date.find('/')
+    second_slash=date.find('/', first_slash+1)
+    if int(date[second_slash+1:])<2013 or len(date[second_slash+1:])!=4:
+    	date_check+=1
+    	
+    if int(date[first_slash+1:second_slash])>12 or int(date[first_slash+1:second_slash])<1:
+    	date_check+=2
+    
+    if int(date[:first_slash])>31 or int(date[:first_slash])<1:
+    	date_check+=4
+    	
+    if date_check==1:
+    	flash("Please set year according to stardard convention(>2012 and 4 digits).")
+    	return redirect(url_for('tasks'))
+    elif date_check==2:
+    	flash("Enter Month between 1-12.")
+    	return redirect(url_for('tasks'))
+    elif date_check==4:
+        flash("Enter date between 1-31.")
+        return redirect(url_for('tasks'))
+    elif date_check==3:
+    	flash('The Year and Month is not set properly.')
+    	return redirect(url_for('tasks'))
+    elif date_check==5:
+    	flash('The Year and Date is not set properly.')
+    	return redirect(url_for('tasks'))
+    elif date_check==7:
+    	flash('The date, Month and Year is not set properly.')
+    	return redirect(url_for('tasks'))
     if not name and not date and not priority:
         flash("You forgot the task name, date, and priority! Try again.")
         return redirect(url_for('tasks'))
+        
     elif not name and not date:
         flash("You forgot the task name and date! Try again.")
         return redirect(url_for('tasks'))
@@ -69,9 +105,6 @@ def new_task():
         return redirect(url_for('tasks'))
     elif not name:
         flash("You forgot the task name! Try again.")
-        return redirect(url_for('tasks'))
-    elif not date:
-        flash("You forgot the task date! Try again.")
         return redirect(url_for('tasks'))
     elif not priority:
         flash("You forgot the task priority! Try again.")
