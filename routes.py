@@ -16,6 +16,9 @@ def connect_db():
 def before_request():
     g.db = connect_db()
 
+@app.errorhandler(404)
+def page_not_found(e):
+	return render_template('404.html'),404
 
 def login_required(test):
 	@wraps(test)
